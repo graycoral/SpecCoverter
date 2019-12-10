@@ -1,18 +1,39 @@
+import os
 import sys
-import PyPDF2
-import textract
+import logging
+import argparse
+
+from Excel import Excel
+from PdfConver import PdfConver
+
+excel = None
+pdf = None
+
+def parseCommandLine():
+    parser = argparse.ArgumentParser(description='AUTOSAR Spec Converter')
+    parser.add_argument('-i', metavar='input file [optional]',
+                        help='AUTOSAR PDF file', default=os.getcwd())
+    parser.add_argument('-o', metavar='output file [optional]', default="AUTOSAR_Spec.xlsx",
+                        help='Add the path to the output file. Default path: AUTOSAR_Spec.xlsx')
+    return parser
+
+def Run():
+    pdf = PdfConver(args)
+    pdf.DoPdf()
+
+def PDFRun():
+    pdf.DoPdf()
+    #excel.DoExcel()
+
+def main(args):
+    """ Main entry point of the program """
+    Run()
+
+if __name__ == '__main__':
+    parser = parseCommandLine()
+    args = parser.parse_args(sys.argv[1:])
+    main(args)
 
 
-class SpecConvert:
-    pfr = ""
-    def __init__(self, PDFfilename):
-        self.pfr = PyPDF2.PdfFileReader(open(PDFfilename, "rb"))  # PdfFileReader object
 
-    def openPdf():
-        number_of_pages = pfr.getNumPages()
-        c = collections.Counter(range(number_of_pages))
-        for i in c:
-            page = pfr.getPage(i)
-            page_content = page.extractText()
-            print page_content.encode('utf-8')
 

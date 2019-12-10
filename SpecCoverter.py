@@ -21,10 +21,6 @@ def Run():
     pdf = PdfConver(args)
     pdf.DoPdf()
 
-def PDFRun():
-    pdf.DoPdf()
-    #excel.DoExcel()
-
 def main(args):
     """ Main entry point of the program """
     Run()

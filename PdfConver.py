@@ -5,9 +5,7 @@ import logging
 import string
 import collections
 
-searchRSWord = "RS_Main_"
-searchRSSDWord = "RS_SOMEIPSD_"
-reqTrace = "RequirementsTracing"
+
 
 class PdfConver:
     PdfFilename = None
@@ -44,7 +42,11 @@ class PdfConver:
             if srch in data:
                 save += srch.strip('[]b')
     def SaveData(self):
-        SaveData={}
+        SaveData=[]
+        searchRSWord = "RS_Main_"
+        searchRSSDWord = "RS_SOMEIPSD_"
+        reqTrace = "RequirementsTracing"
+
         for i in range(0, self.FileReader.getNumPages()):
             page = self.FileReader.getPage(i).extractText() + "\n"
             page_content = page.encode('utf-8')
@@ -64,9 +66,13 @@ class PdfConver:
                             if feature.find(']') != -1:
                                 eIdx = feature.find(']')
                             print(feature[sIdx:eIdx])
-                            """ Find RS_Main """
-                            feature[sIdx:eIdx]
+                            if feature[sIdx:eIdx] is not SaveData:
+
+
+
+
                             """ Save RS_SOMEIPSD """
+                            RSList =[]
                             for content in pageContent:
                                 if searchRSSDWord in str(content):
                                     RS = str(content)
@@ -74,10 +80,15 @@ class PdfConver:
                                     eIdx = -1
                                     if RS.find(']') != -1:
                                         eIdx = RS.find(']')
-                                    key = feature[sIdx:eIdx]
-                                    SaveData[str(key)] = [SaveData[str(key)] + RS[sIdx:eIdx]]
-                            print(SaveData)
+                                    RSList.append(RS[sIdx:eIdx])
+                            key = feature[sIdx:eIdx]
+                            SaveData[str(key)] = RSList
                             """ Save Description """
+                            SaveData[key+'Description'] = "TEST"
+                            print(SaveData)
+                        if 'Description' in str(search):
+                            SaveData[]
+
                     break
 
 

@@ -42,15 +42,20 @@ class PdfConver:
             if srch in data:
                 save += srch.strip('[]b')
     def SaveData(self):
-        SaveData=[]
-        searchRSWord = "RS_Main_"
-        searchRSSDWord = "RS_SOMEIPSD_"
+        SaveDatas=[]
+        SaveData={}
+        searchRSWord = "RS_Main"
+        searchRSSDWord = "RS_SOMEIPSD"
         reqTrace = "RequirementsTracing"
+        Description = 'Description'
 
         for i in range(0, self.FileReader.getNumPages()):
             page = self.FileReader.getPage(i).extractText() + "\n"
             page_content = page.encode('utf-8')
             pageContent = None
+            feature = None
+            CheckDesc = False
+            DescStr=""
 
             ResSearch = re.search(reqTrace, str(page_content))
             if ResSearch is not None:
@@ -59,37 +64,48 @@ class PdfConver:
                 if RSSearch is not None:
                     pageContent = page_content.split()
                     for search in pageContent:
+                        """ Save RS_Main """
                         if searchRSWord in str(search):
                             feature = str(search)
                             sIdx = feature.find(searchRSWord[0])
                             eIdx = -1
+
                             if feature.find(']') != -1:
                                 eIdx = feature.find(']')
                             print(feature[sIdx:eIdx])
+                            SaveData[searchRSWord] = feature[sIdx:eIdx]
+
+                            """ if new RS Main clear list"""
+                            RSList = []
                             if feature[sIdx:eIdx] is not SaveData:
+                                RSList.clear()
+                            """ Check Description """
+                            CheckDesc = True
 
+                        """ Save RS_SOMEIPSD """
+                        if searchRSSDWord in str(search):
+                            if CheckDesc is True:
+                                CheckDesc = False
+                                SaveData[Description] = DescStr
+                                DescStr=""
+                            RS = str(search)
+                            sIdx = RS.find(searchRSSDWord[0])
+                            eIdx = -1
+                            if RS.find(']') != -1:
+                                eIdx = RS.find(']')
+                            RSList.append(RS[sIdx:eIdx])
+                            key = feature
+                            SaveData[searchRSSDWord] = RSList
 
+                        """ Save Description """
+                        if CheckDesc is True:
+                            if searchRSWord not in str(search):
+                                DescStr += str(search).replace("[]", "") + " "
 
-
-                            """ Save RS_SOMEIPSD """
-                            RSList =[]
-                            for content in pageContent:
-                                if searchRSSDWord in str(content):
-                                    RS = str(content)
-                                    sIdx = RS.find(searchRSSDWord[0])
-                                    eIdx = -1
-                                    if RS.find(']') != -1:
-                                        eIdx = RS.find(']')
-                                    RSList.append(RS[sIdx:eIdx])
-                            key = feature[sIdx:eIdx]
-                            SaveData[str(key)] = RSList
-                            """ Save Description """
-                            SaveData[key+'Description'] = "TEST"
-                            print(SaveData)
-                        if 'Description' in str(search):
-                            SaveData[]
-
-                    break
+                        print(SaveData)
+                    SaveDatas += SaveData
+                    print(SaveDatas)
+                    #break
 
 
     def SaveRSMain(self):
